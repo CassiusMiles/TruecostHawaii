@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TrueCost Hawaii - See the Real Price</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(to bottom, #eff6ff, #ffffff);
+            color: #1f2937;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            color: #0077BE;
+            margin-bottom: 10px;
+        }
+        
+        .tagline {
+            font-size: 1.25rem;
+            color: #6b7280;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        .hero-text {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .hero-text h2 {
+            font-size: 1.875rem;
+            margin-bottom: 12px;
+            color: #1f2937;
+        }
+        
+        .hero-text p {
+            color: #6b7280;
+            font-size: 1.125rem;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #374151;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.2s;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: #0077BE;
+        }
+        
+        .input-with-dollar {
+            position: relative;
+        }
+        
+        .input-with-dollar input {
+            padding-left: 30px;
+        }
+        
+        .dollar-sign {
+            position: absolute;
+            left: 12px;
+            top: 12px;
+            color: #6b7280;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        button {
+            width: 100%;
+            padding: 14px;
+            background: #0077BE;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        button:hover {
+            background: #005a94;
+        }
+        
+        .trust-block {
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 12px;
+            padding: 24px;
+        }
+        
+        .trust-block h3 {
+            margin-bottom: 16px;
+            color: #1f2937;
+        }
+        
+        .trust-block ul {
+            list-style: none;
+        }
+        
+        .trust-block li {
+            padding: 8px 0;
+            padding-left: 28px;
+            position: relative;
+            color: #374151;
+        }
+        
+        .trust-block li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #0077BE;
+            font-weight: bold;
+        }
+        
+        .results {
+            display: none;
+        }
+        
+        .results.active {
+            display: block;
+        }
+        
+        .big-number {
+            text-align: center;
+            padding: 30px;
+            border-bottom: 2px solid #e5e7eb;
+            margin-bottom: 30px;
+        }
+        
+        .big-number-label {
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .big-number-value {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #0077BE;
+            margin-bottom: 8px;
+        }
+        
+        .big-number-subtitle {
+            color: #6b7280;
+        }
+        
+        .breakdown {
+            margin-bottom: 30px;
+        }
+        
+        .breakdown h3 {
+            margin-bottom: 16px;
+            color: #1f2937;
+        }
+        
+        .breakdown-line {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #f3f4f6;
+        }
+        
+        .breakdown-line.total {
+            border-top: 2px solid #e5e7eb;
+            border-bottom: none;
+            font-weight: bold;
+            font-size: 1.125rem;
+            margin-top: 8px;
+            padding-top: 16px;
+        }
+        
+        .score-badge {
+            border-radius: 12px;
+            padding: 24px;
+            text-align: center;
+            border: 2px solid;
+        }
+        
+        .score-badge.high {
+            background: #f0fdf4;
+            border-color: #86efac;
+            color: #166534;
+        }
+        
+        .score-badge.medium {
+            background: #fefce8;
+            border-color: #fde047;
+            color: #854d0e;
+        }
+        
+        .score-badge.low {
+            background: #fff7ed;
+            border-color: #fdba74;
+            color: #9a3412;
+        }
+        
+        .score-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        
+        .score-label {
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .score-description {
+            font-size: 0.875rem;
+            opacity: 0.9;
+        }
+        
+        .back-button {
+            background: white;
+            color: #0077BE;
+            border: 2px solid #0077BE;
+            margin-bottom: 20px;
+        }
+        
+        .back-button:hover {
+            background: #f9fafb;
+        }
+        
+        @media (max-width: 640px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .hero-text h2 {
+                font-size: 1.5rem;
+            }
+            
+            .big-number-value {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌴 TrueCost Hawaii</h1>
+            <p class="tagline">See the real price per night before you book</p>
+        </div>
+
+        <!-- Input Form -->
+        <div id="inputSection">
+            <div class="card">
+                <div class="hero-text">
+                    <h2>Calculate Your True Nightly Cost</h2>
+                    <p>Enter listing details to reveal total cost, fees, and true nightly price in Hawaiʻi</p>
+                </div>
+
+                <form id="calcForm">
+                    <div class="form-group">
+                        <label>Listing Title (Optional)</label>
+                        <input type="text" id="title" placeholder="Ex: Waikiki Beach Studio">
+                    </div>
+
+                    <div class="grid">
+                        <div class="form-group">
+                            <label>Number of Nights *</label>
+                            <input type="number" id="nights" min="1" value="3" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Guests</label>
+                            <input type="number" id="guests" min="1" value="2">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Island</label>
+                            <select id="island">
+                                <option>Oahu</option>
+                                <option>Maui</option>
+                                <option>Kauai</option>
+                                <option>Hawaii (Big Island)</option>
+                                <option>Lanai</option>
+                                <option>Molokai</option>
+                                <option>Unknown</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <hr style="margin: 30px 0; border: none; border-top: 1px solid #e5e7eb;">
+
+                    <h3 style="margin-bottom: 20px; color: #1f2937;">Pricing Details</h3>
+
+                    <div class="form-group">
+                        <label>Nightly Rate * (per night)</label>
+                        <div class="input-with-dollar">
+                            <span class="dollar-sign">$</span>
+                            <input type="number" id="nightlyRate" step="0.01" min="0" placeholder="150.00" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Cleaning Fee (one-time)</label>
+                        <div class="input-with-dollar">
+                            <span class="dollar-sign">$</span>
+                            <input type="number" id="cleaningFee" step="0.01" min="0" placeholder="75.00" value="0">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Service Fee</label>
+                        <div class="input-with-dollar">
+                            <span class="dollar-sign">$</span>
+                            <input type="number" id="serviceFee" step="0.01" min="0" placeholder="45.00" value="0">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Taxes (total)</label>
+                        <div class="input-with-dollar">
+                            <span class="dollar-sign">$</span>
+                            <input type="number" id="taxes" step="0.01" min="0" placeholder="60.00" value="0">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Other Fees</label>
+                        <div class="input-with-dollar">
+                            <span class="dollar-sign">$</span>
+                            <input type="number" id="otherFees" step="0.01" min="0" placeholder="0.00" value="0">
+                        </div>
+                    </div>
+
+                    <button type="submit">Calculate True Cost</button>
+                </form>
+            </div>
+
+            <div class="trust-block">
+                <h3>Why TrueCost Hawaii?</h3>
+                <ul>
+                    <li>We show the full breakdown (nightly + fees + taxes)</li>
+                    <li>If something is missing, we label it as an estimate</li>
+                    <li>Built for Hawaiʻi travelers and staycations</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <div id="resultsSection" class="results">
+            <button class="back-button" onclick="showInput()">← Calculate Another</button>
+
+            <div class="card">
+                <div id="listingInfo" style="margin-bottom: 20px;">
+                    <h2 id="resultTitle" style="margin-bottom: 8px;"></h2>
+                    <p id="resultDetails" style="color: #6b7280;"></p>
+                </div>
+
+                <div class="big-number">
+                    <div class="big-number-label">True Cost Per Night</div>
+                    <div class="big-number-value" id="trueCostPerNight">$0.00</div>
+                    <div class="big-number-subtitle">Total: <span id="totalCost">$0.00</span></div>
+                </div>
+
+                <div class="breakdown">
+                    <h3>Cost Breakdown</h3>
+                    <div id="breakdownList"></div>
+                </div>
+            </div>
+
+            <div id="scoreCard" class="card">
+                <div class="score-badge" id="scoreBadge">
+                    <div class="score-number" id="scoreNumber">0</div>
+                    <div class="score-label" id="scoreLabel">Transparency Score</div>
+                    <div class="score-description">This score reflects how clear the pricing is. Lower scores indicate more hidden fees or unclear charges.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD',
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }).format(amount);
+        }
+
+        function calculateTransparencyScore(feePercent) {
+            let score = 100 - (feePercent * 90);
+            score = Math.max(0, Math.min(100, Math.round(score)));
+            
+            let label, badgeClass;
+            if (score >= 85) {
+                label = "Very transparent";
+                badgeClass = "high";
+            } else if (score >= 65) {
+                label = "Some fees";
+                badgeClass = "medium";
+            } else {
+                label = "Fee heavy / unclear";
+                badgeClass = "low";
+            }
+            
+            return { score, label, badgeClass };
+        }
+
+        function showInput() {
+            document.getElementById('inputSection').style.display = 'block';
+            document.getElementById('resultsSection').classList.remove('active');
+            window.scrollTo(0, 0);
+        }
+
+        function showResults() {
+            document.getElementById('inputSection').style.display = 'none';
+            document.getElementById('resultsSection').classList.add('active');
+            window.scrollTo(0, 0);
+        }
+
+        document.getElementById('calcForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // Get form values
+            const title = document.getElementById('title').value || 'Your Listing';
+            const nights = parseInt(document.getElementById('nights').value);
+            const guests = parseInt(document.getElementById('guests').value);
+            const island = document.getElementById('island').value;
+            const nightlyRate = parseFloat(document.getElementById('nightlyRate').value) || 0;
+            const cleaningFee = parseFloat(document.getElementById('cleaningFee').value) || 0;
+            const serviceFee = parseFloat(document.getElementById('serviceFee').value) || 0;
+            const taxes = parseFloat(document.getElementById('taxes').value) || 0;
+            const otherFees = parseFloat(document.getElementById('otherFees').value) || 0;
+
+            // Calculate
+            const nightlySubtotal = nightlyRate * nights;
+            const feesTotal = cleaningFee + serviceFee + taxes + otherFees;
+            const totalCost = nightlySubtotal + feesTotal;
+            const trueCostPerNight = totalCost / nights;
+            const feePercent = totalCost > 0 ? feesTotal / totalCost : 0;
+
+            // Transparency score
+            const { score, label, badgeClass } = calculateTransparencyScore(feePercent);
+
+            // Update results
+            document.getElementById('resultTitle').textContent = title;
+            document.getElementById('resultDetails').textContent = 
+                `${island} • ${nights} nights • ${guests} guests`;
+
+            document.getElementById('trueCostPerNight').textContent = formatCurrency(trueCostPerNight);
+            document.getElementById('totalCost').textContent = formatCurrency(totalCost);
+
+            // Breakdown
+            let breakdownHTML = `
+                <div class="breakdown-line">
+                    <span>Nightly rate × ${nights} nights</span>
+                    <span>${formatCurrency(nightlySubtotal)}</span>
+                </div>
+            `;
+
+            if (cleaningFee > 0) {
+                breakdownHTML += `
+                    <div class="breakdown-line">
+                        <span>Cleaning fee</span>
+                        <span>${formatCurrency(cleaningFee)}</span>
+                    </div>
+                `;
+            }
+
+            if (serviceFee > 0) {
+                breakdownHTML += `
+                    <div class="breakdown-line">
+                        <span>Service fee</span>
+                        <span>${formatCurrency(serviceFee)}</span>
+                    </div>
+                `;
+            }
+
+            if (taxes > 0) {
+                breakdownHTML += `
+                    <div class="breakdown-line">
+                        <span>Taxes</span>
+                        <span>${formatCurrency(taxes)}</span>
+                    </div>
+                `;
+            }
+
+            if (otherFees > 0) {
+                breakdownHTML += `
+                    <div class="breakdown-line">
+                        <span>Other fees</span>
+                        <span>${formatCurrency(otherFees)}</span>
+                    </div>
+                `;
+            }
+
+            breakdownHTML += `
+                <div class="breakdown-line total">
+                    <span>Total Cost</span>
+                    <span>${formatCurrency(totalCost)}</span>
+                </div>
+                <div style="margin-top: 12px; color: #6b7280; font-size: 0.875rem;">
+                    Fees: ${formatCurrency(feesTotal)} (${(feePercent * 100).toFixed(1)}% of total)
+                </div>
+            `;
+
+            document.getElementById('breakdownList').innerHTML = breakdownHTML;
+
+            // Score badge
+            document.getElementById('scoreNumber').textContent = score;
+            document.getElementById('scoreLabel').textContent = label;
+            document.getElementById('scoreBadge').className = 'score-badge ' + badgeClass;
+
+            showResults();
+        });
+    </script>
+</body>
+</html>
